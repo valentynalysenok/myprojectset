@@ -33,3 +33,6 @@ __pycache__
 /*.sh
 *.csv
 /celerybeat-schedule.db
+ssh_key
+ssh_key.pub
+/ssh_key.pub
