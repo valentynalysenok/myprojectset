@@ -9,10 +9,10 @@ def send_verification_email(user, domain):
     message = render_to_string('accounts/activate_account.html', {
         'user': user,
         'domain': domain,
-        'user_id': user.id,
+        'id': user.id,
     })
     email = EmailMessage(subject=subject,
                          body=message,
-                         from_email='admin@myprojectset.com',
+                         from_email='valentynalysenok@planeks.net',
                          to=[user.email])
     email.send()

@@ -4,7 +4,6 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.translation import ugettext as _
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
