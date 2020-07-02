@@ -45,4 +45,6 @@ urlpatterns = [
 
     path('profile/personal-information/', views.personal_information, name='personal_information'),
     path('profile/personal-information/edit/', views.edit_personal_information, name='edit_personal_information'),
+
+    path('activate/<id>', views.activate_user_account, name='activate_account'),
 ]

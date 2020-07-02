@@ -184,3 +184,10 @@ GOOGLE_TAG_MANAGER = os.environ.get('GOOGLE_TAG_MANAGER', '')
 # ELASTICSEARCH_INDICES_PREFIX = config('ELASTICSEARCH_INDICES_PREFIX', default=PROJECT_NAME)
 
 SITE_URL = config('SITE_URL', default='')
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
+EMAIL_PORT = 587
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
