@@ -77,6 +77,7 @@ def register(request, template_name='accounts/register.html'):
             user = form.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
+            return redirect(reverse('index'))
     else:
         form = UserRegistrationForm()
 
