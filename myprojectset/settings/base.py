@@ -38,6 +38,9 @@ INSTALLED_APPS = [
 
     'apps.core',
     'apps.accounts',
+    'apps.projects',
+    'apps.companies',
+
 ]
 
 
