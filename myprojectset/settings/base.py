@@ -1,8 +1,7 @@
 import os
-import dj_database_url
-from django.utils.crypto import get_random_string
-from decouple import config, Csv
 
+import dj_database_url
+from decouple import config, Csv
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -11,12 +10,10 @@ PROJECT_NAME = config('PROJECT_NAME')
 
 SECRET_KEY = config("SECRET_KEY")
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -27,7 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'social_django',
     'django_extensions',
 
     # 'mptt',
@@ -43,7 +40,6 @@ INSTALLED_APPS = [
 
 ]
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,7 +50,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 ROOT_URLCONF = '%s.urls' % PROJECT_NAME
 
@@ -74,6 +69,9 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -85,7 +83,6 @@ TEMPLATES = [
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 WSGI_APPLICATION = '%s.wsgi.application' % PROJECT_NAME
-
 
 # Database
 DATABASES = {
@@ -108,7 +105,6 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
-
 # Internationalization
 LANGUAGE_CODE = config('LANGUAGE_CODE', default='en')
 
@@ -124,7 +120,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -138,10 +133,11 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = config('MEDIA_ROOT', default=os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
 
-
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = (
+    'social_core.backends.linkedin.LinkedinOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -188,9 +184,26 @@ GOOGLE_TAG_MANAGER = os.environ.get('GOOGLE_TAG_MANAGER', '')
 
 SITE_URL = config('SITE_URL', default='')
 
+# SendGrid configuration
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
 EMAIL_PORT = 587
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# linkedin-oauth2
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('LINKEDIN_OAUTH2_KEY')  # Client ID
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = config('LINKEDIN_OAUTH2_SECRET')  # Client Secret
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_basicprofile', 'r_emailaddress']
+SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = ['email-address',
+                                               'formatted-name',
+                                               'public-profile-url',
+                                               'picture-url']
+SOCIAL_AUTH_LINKEDIN_OAUTH2_EXTRA_DATA = [
+    ('id', 'id'),
+    ('formattedName', 'name'),
+    ('emailAddress', 'email_address'),
+    ('pictureUrl', 'picture_url'),
+    ('publicProfileUrl', 'profile_url'),
+]
