@@ -55,7 +55,7 @@ export $(.env | xargs)
 
 ### How to run Celery worker
 
-    DJANGO_SETTINGS_MODULE=myprojectset.settings.development celery -A demo worker -B --loglevel=info
+    DJANGO_SETTINGS_MODULE=myprojectset.settings.development celery -A myprojectset worker -B --loglevel=info
 
 ### How to run unit tests
 

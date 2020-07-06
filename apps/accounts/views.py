@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -32,8 +31,7 @@ def edit_personal_information(request):
             user.email_verified = False
             user.save()
 
-            current_site = get_current_site(request)
-            send_verification_email.delay(user=user, domain=current_site)
+            send_verification_email.delay(user_id=user.id)
 
             messages.success(request,
                              'Please confirm your new email address')
@@ -83,9 +81,8 @@ def register(request, template_name='accounts/register.html'):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.is_active = False
             user.save()
-            current_site = get_current_site(request)
 
-            send_verification_email.delay(user=user, domain=current_site)
+            send_verification_email.delay(user_id=user.id)
 
             messages.success(request,
                              'Please confirm your email address '
@@ -115,7 +112,7 @@ def activate_user_account(request, user_id):
         user.is_active = True
         user.email_verified = True
         user.save()
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, 'Your email has been confirmed successfully.')
         return redirect(reverse('index'))
     else:

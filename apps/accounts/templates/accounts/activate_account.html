@@ -1,5 +1,4 @@
 {% autoescape off %}
-    Hi {{ user.full_name }},
-    Please click on the link to confirm your registration,
+    Please click on the link to confirm your registration with email {{ email }}
     http://{{ domain }}{% url 'accounts:activate_account' id %}
 {% endautoescape %}
