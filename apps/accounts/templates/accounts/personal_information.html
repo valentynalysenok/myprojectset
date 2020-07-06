@@ -22,6 +22,7 @@
 </div>
 
 <div class="mt-4">
-    <a href="{% url 'edit_personal_information' %}" class="btn btn-secondary">{% trans "Edit profile" %}</a>
+    <a href="{% url 'accounts:edit_personal_information' %}" class="btn btn-secondary">{% trans "Edit profile" %}</a>
+    <a href="{% url 'accounts:password_change' %}" class="btn btn-secondary">{% trans "Change password" %}</a>
 </div>
 {% endblock %}

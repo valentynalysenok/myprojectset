@@ -69,6 +69,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     email = models.EmailField(_('Email'), max_length=255, unique=True)
     name = models.CharField(_('Full name'), max_length=255)
+    email_verified = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     is_staff = models.BooleanField(
         _('staff status'),

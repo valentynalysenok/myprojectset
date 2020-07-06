@@ -36,8 +36,13 @@ DEBUG_TOOLBAR_PANELS = [
     'template_profiler_panel.panels.template.TemplateProfilerPanel',
 ]
 
+EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'email')
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
+EMAIL_PORT = 587
 
 CACHES = {
     'default': {
@@ -51,7 +56,7 @@ CACHES = {
 
 # Sentry setting
 sentry_sdk.init(
-    dsn="https://7b7fe4b6b2ed45a996a7436e23f43f01@o415122.ingest.sentry.io/5305730",
+    dsn=config('SENTRY_DSN'),
     integrations=[DjangoIntegration()],
 
     # If you wish to associate users to errors (assuming you are using

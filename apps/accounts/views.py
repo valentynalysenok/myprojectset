@@ -1,18 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
-from django.utils.translation import ugettext as _
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.urls import reverse, reverse_lazy
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.utils import timezone
-from datetime import timedelta
-from django.db.models import Q
-from .models import User
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from .forms import EditUserForm
+from .models import User
+from .tasks import send_verification_email
 
 
 @login_required
@@ -31,8 +26,16 @@ def edit_personal_information(request):
     if request.method == 'POST':
         form = EditUserForm(instance=user, data=request.POST, files=request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect(reverse('personal_information'))
+            user = form.save(commit=False)
+            user.is_active = False
+            user.email_verified = False
+            user.save()
+
+            send_verification_email.delay(user_id=user.id)
+
+            messages.success(request,
+                             'Please confirm your new email address')
+            return redirect(reverse('accounts:personal_information'))
     else:
         form = EditUserForm(instance=user)
     context = {
@@ -74,9 +77,17 @@ def register(request, template_name='accounts/register.html'):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            login(request, user)
+            user.is_active = False
+            user.save()
+
+            send_verification_email.delay(user_id=user.id)
+
+            messages.success(request,
+                             'Please confirm your email address '
+                             'to complete the registration.')
+            return redirect(reverse('index'))
     else:
         form = UserRegistrationForm()
 
@@ -90,3 +101,20 @@ def logout_view(request):
     _next = request.GET.get('next')
     logout(request)
     return redirect(_next if _next else settings.LOGOUT_REDIRECT_URL)
+
+
+def activate_user_account(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None:
+        user.is_active = True
+        user.email_verified = True
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        messages.success(request, 'Your email has been confirmed successfully.')
+        return redirect(reverse('index'))
+    else:
+        messages.error(request, 'Activation link is invalid!')
+        return redirect(reverse('index'))
