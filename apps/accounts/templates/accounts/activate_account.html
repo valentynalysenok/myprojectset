@@ -1,4 +1,4 @@
 {% autoescape off %}
     Please click on the link to confirm your registration with email {{ email }}
-    http://{{ domain }}{% url 'accounts:activate_account' id %}
+    {{ protocol }}{{ domain }}{% url 'accounts:activate_account' id %}
 {% endautoescape %}

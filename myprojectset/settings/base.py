@@ -13,6 +13,10 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DOMAIN_NAME = 'lysenok.planeks.net'
+PROTOCOL_HTTP = 'http://'
+PROTOCOL_HTTPS = 'https://'
+
 ALLOWED_HOSTS = []
 
 # Application definition
