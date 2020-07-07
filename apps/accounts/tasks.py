@@ -6,6 +6,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
 from apps.accounts.models import User
+from myprojectset.settings.base import DOMAIN_NAME, PROTOCOL_HTTP
 
 
 @shared_task
@@ -15,7 +16,8 @@ def send_verification_email(user_id):
 
     message = render_to_string('accounts/activate_account.html', {
         'email': user.email,
-        'domain': 'lysenok.planeks.net',
+        'protocol': PROTOCOL_HTTP,
+        'domain': DOMAIN_NAME,
         'id': user.id,
     })
     email = EmailMessage(subject=subject,
