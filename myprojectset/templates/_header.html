@@ -12,6 +12,15 @@
     </ul>
     <ul class="navbar-nav">
         {% if request.user.is_authenticated %}
+            {% for ass in backends.associated %}
+                {% if ass.provider == 'linkedin-oauth2' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:personal_information' %}">
+                            {{ ass.extra_data.name }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'accounts:personal_information' %}">{{ request.user.name }}</a>
             </li>
