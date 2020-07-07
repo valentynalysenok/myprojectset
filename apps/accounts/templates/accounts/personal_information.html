@@ -11,10 +11,20 @@
         <table class="table table-bordered">
             <tr>
                 <td>{% trans "Name" %}</td>
+                {% for ass in backends.associated %}
+                    {% if ass.provider == 'linkedin-oauth2' %}
+                        <td>{{ ass.extra_data.name }}</td>
+                    {% endif %}
+                {% endfor %}
                 <td>{{ request.user.name }}</td>
             </tr>
             <tr>
                 <td>{% trans "Email" %}</td>
+                {% for ass in backends.associated %}
+                    {% if ass.provider == 'linkedin-oauth2' %}
+                        <td>{{ ass.extra_data.email_address }}</td>
+                    {% endif %}
+                {% endfor %}
                 <td><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></td>
             </tr>
         </table>
